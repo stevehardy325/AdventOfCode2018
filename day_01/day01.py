@@ -6,6 +6,7 @@
 # Part 2: find first repeated frequency reached after a change
 
 class Results:
+    #class to abstract the results
     def __init__(self):
         #sum for part 1
         self.sum = 0
@@ -14,6 +15,8 @@ class Results:
         self.repeated = None
 
     def changeFreq(self, n):
+        #modify the current frequency by an integer amount
+
         #calculate part 1
         self.sum += num
         #see if the sum is repeated for part 2
