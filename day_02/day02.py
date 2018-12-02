@@ -1,8 +1,7 @@
 #Part 1 - calculate a checksum with the following formula:
 # (count of boxes with exactly 2 of any letter) * (count of boxes with exactly 3 of any letter)
 
-filename = "input"
-file = open(filename, "r")
+#Part 2 - find common letters shared between the two boxes with only 1 letter difference between ids
 
 class Box:
     def __init__(self, id):
@@ -33,26 +32,36 @@ class Box:
             strSame = None
         return strSame
 
+class BoxChecker:
+    def __init__(self, filename):
+        file = open(filename, "r")
+        self.boxes = []
+        for line in file:
+            self.boxes += [Box(line)]
+        file.close()
 
+    def checksum(self):
+        twos = 0
+        threes = 0
+        for box in self.boxes:
+            if box.hasExactTwo: twos += 1
+            if box.hasExactThree: threes += 1
+        checksum = twos * threes
+        return str(checksum)
 
-boxes = []
-for line in file:
-    boxes += [Box(line)]
-file.close()
+    def compareBoxes(self):
+        for i in range(len(self.boxes)):
+            first = self.boxes[i]
+            for j in range(i+1, len(self.boxes)):
+                second = self.boxes[j]
+                common = first.compareBoxID(second)
+                if common != None:
+                    return common
 
-twos = 0
-threes = 0
-for box in boxes:
-    if box.hasExactTwo: twos += 1
-    if box.hasExactThree: threes += 1
-checksum = twos * threes
+def main():
+    checker = BoxChecker("input")
+    print("Checksum: " + checker.checksum())
+    print("Common Letters: " + checker.compareBoxes())
 
-print("Checksum: " + str(checksum))
-
-for i in range(len(boxes)):
-    first = boxes[i]
-    for j in range(i+1, len(boxes)):
-        second = boxes[j]
-        common = first.compareBoxID(second)
-        if common != None:
-            print("Common Letters: " + common)
+if __name__ == '__main__':
+    main()
