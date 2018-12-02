@@ -22,6 +22,19 @@ class Box:
             if self.letterCounts[letter] == 3:
                 self.hasExactThree = True
 
+    def compareBoxID(self, other):
+        diffs = []
+        for i in range(len(self.id)):
+            if self.id[i] != other.id[i]:
+                diffs += [i]
+        if len(diffs) == 1:
+            strSame = self.id[0:diffs[0]] + self.id[diffs[0]+1:]
+        else:
+            strSame = None
+        return strSame
+
+
+
 boxes = []
 for line in file:
     boxes += [Box(line)]
@@ -35,3 +48,11 @@ for box in boxes:
 checksum = twos * threes
 
 print("Checksum: " + str(checksum))
+
+for i in range(len(boxes)):
+    first = boxes[i]
+    for j in range(i+1, len(boxes)):
+        second = boxes[j]
+        common = first.compareBoxID(second)
+        if common != None:
+            print("Common Letters: " + common)
