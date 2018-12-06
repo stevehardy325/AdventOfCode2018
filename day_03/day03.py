@@ -30,31 +30,22 @@ def main():
     filename = "input"
     file = open(filename, "r")
 
-    rects = []
-    min_x = 0
-    max_x = 0
-    min_y = 0
-    max_y = 0
+    fabric_squares = dict()
 
     for line in file:
         r = Rectangle(line)
-        rects += [r]
-        min_x = min(min_x, r.x1)
-        max_x = max(max_x, r.x2)
-        min_y = min(min_y, r.y1)
-        max_y = max(max_y, r.y2)
+        for x in range(r.x1, r.x2):
+            for y in range(r.y1, r.y2):
+                if (x,y) not in fabric_squares:
+                    fabric_squares[(x,y)] = 1
+                else:
+                    fabric_squares[(x,y)] += 1
 
-    print('{} {} {} {}'.format(min_x, min_y, max_x, max_y))
 
     overlapping = 0
-    for x in range(min_x, max_x+1):
-        for y in range(min_y, max_y+1):
-            print('{} {}'.format(x, y))
-            rects_over_x_y = 0
-            for r in rects:
-                if r.contains(x,y):
-                    rects_over_x_y += 1
-            if rects_over_x_y > 1: overlapping += 1
+    for square in fabric_squares:
+        if fabric_squares[square] > 1:
+            overlapping += 1
 
 
     file.close()
