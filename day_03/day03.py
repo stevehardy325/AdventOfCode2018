@@ -1,17 +1,23 @@
 class Rectangle:
-    def __init__(self, string):
+    def __init__(self, string, rects):
         parts = string.split(' ')
         self.id = int(parts[0][1:])
         corners = parts[2].split(',')
         self.x1 = int(corners[0])
         self.y1 = int(corners[1][:-1])
         dims = parts[3].split('x')
+
         self.width = int(dims[0])
         self.height = int(dims[1])
         self.x2 = self.x1 + self.width
         self.y2 = self.y1 + self.height
-        self.area = self.width * self.height
-        self.overlaps = False
+        #self.area = self.width * self.height
+
+        self.overlappers = set()
+        for other in rects:
+            if self.overlaps(other):
+                other.overlappers.add(self)
+                self.overlappers.add(other)
 
     def overlaps(self, other):
         y_overlap = True
@@ -22,25 +28,24 @@ class Rectangle:
             y_overlap = False
         return y_overlap and x_overlap
 
-    def contains(self, x, y):
-        return (x >= self.x1 and x < self.x2 and y >= self.y1 and y < self.y2)
-
-
 def main():
     filename = "input"
     file = open(filename, "r")
 
     fabric_squares = dict()
+    rects = []
 
     for line in file:
-        r = Rectangle(line)
+        r = Rectangle(line, rects)
         for x in range(r.x1, r.x2):
             for y in range(r.y1, r.y2):
                 if (x,y) not in fabric_squares:
                     fabric_squares[(x,y)] = 1
                 else:
                     fabric_squares[(x,y)] += 1
+        rects += [r]
 
+    file.close()
 
     overlapping = 0
     for square in fabric_squares:
@@ -48,9 +53,13 @@ def main():
             overlapping += 1
 
 
-    file.close()
+
 
     print("Overlapping sq inches: ", overlapping)
+
+    for r in rects:
+        if len(r.overlappers) == 0:
+            print("Claim with no overlaps: " + str(r.id))
 
 
 
