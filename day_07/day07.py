@@ -10,6 +10,9 @@ class Node:
     def __repr__(self):
         return self.letter
 
+    def __str__(self):
+        return self.letter
+
 def link(pre, post):
     pre.after.add(post)
     post.before.add(pre)
@@ -27,18 +30,47 @@ def main():
                 steps[post] = Node(post)
             link(steps[pre], steps[post])
 
-    print(steps)
     done = set()
     stepsList = list(steps.values())
     order = []
     while(len(stepsList) > 0):
-        #print(min([step for step in stepsList if (step.before.issubset(done) or len(step.before) == 0)]), )
-        next = min([step for step in stepsList if (step.before.issubset(done) or len(step.before) == 0)])
+        next = min([step for step in stepsList if step.before.issubset(done)])
         order += [next]
         done.add(next)
         stepsList.remove(next)
 
-    print(''.join(str(v) for v in order))
+    print('Part A: ' + ''.join(str(v) for v in order))
+
+    done = set()
+    stepsList = list(steps.values())
+    curTime = -1
+    nextIndex = 0
+    workers = [None for i in range(5)]
+    while(len(done) < len(order)):
+        curTime += 1
+        for i in range(len(workers)):
+            worker = workers[i]
+            if worker != None:
+                worker[1] -= 1
+                if worker[1] <= 0:
+                    done.add(worker[0])
+                    workers[i] = None
+
+        while len([step for step in stepsList if step.before.issubset(done)]) != 0 and None in workers:
+            next = min([step for step in stepsList if step.before.issubset(done)])
+            time = ord(str(next).lower()) - 96 + 60
+            workerIndex = workers.index(None)
+            workers[workerIndex] = [next, time]
+            stepsList.remove(next)
+
+
+
+
+
+        print('{}: {}'.format(curTime, workers))
+
+
+    print('Part B: {}'.format(curTime))
 
 
 
