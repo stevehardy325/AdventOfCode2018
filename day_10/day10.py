@@ -61,6 +61,10 @@ def main():
             time += 1
             prevArea = area
             points = newPoints
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> 690fe8f126f957caf3935031e9c2418fa423f4eb
 if __name__ == '__main__':
     main()
