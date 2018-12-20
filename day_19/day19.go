@@ -6,6 +6,7 @@ import (
     "io/ioutil"
     "strings"
     "strconv"
+    "time"
 )
 
 type operation struct {
@@ -192,6 +193,24 @@ func runProgram(prog []operation, pcreg int) int {
 
 }
 
+func runProgramB(prog []operation, pcreg int) int {
+    registers := [6]int{1,0,0,0,0,0}
+
+    for registers[pcreg] < len(prog) {
+        pc := registers[pcreg]
+
+
+        registers = prog[pc].opcode(registers, prog[pc])
+
+        registers[pcreg]++
+        fmt.Println(registers)
+        time.Sleep(time.Second/4)
+    }
+
+    return registers[0]
+
+}
+
 func test() bool {
     program, pcreg := parseProgram("test_input")
     return runProgram(program, pcreg) == 7
@@ -204,6 +223,7 @@ func main() {
 
         program, pcreg := parseProgram("input")
         fmt.Println("Part A:", runProgram(program, pcreg))
+        fmt.Println("Part B:", runProgramB(program, pcreg))
 
     } else {
         fmt.Println("A test failed")
