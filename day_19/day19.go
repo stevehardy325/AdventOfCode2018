@@ -7,6 +7,7 @@ import (
     "strings"
     "strconv"
     "time"
+    "math"
 )
 
 type operation struct {
@@ -179,14 +180,18 @@ func parseProgram(filename string) ([]operation,int) {
 func runProgram(prog []operation, pcreg int) int {
     registers := [6]int{0,0,0,0,0,0}
 
+
+    shouldPrint := false
     for registers[pcreg] < len(prog) {
         pc := registers[pcreg]
-
 
         registers = prog[pc].opcode(registers, prog[pc])
 
         registers[pcreg]++
-        //fmt.Println(registers)
+        if shouldPrint {
+            fmt.Println(registers)
+            time.Sleep(time.Second/400)
+        }
     }
 
     return registers[0]
@@ -199,16 +204,40 @@ func runProgramB(prog []operation, pcreg int) int {
     for registers[pcreg] < len(prog) {
         pc := registers[pcreg]
 
+        if pc == 3 {
+            //I traced the asm code (with the help of prints)
+            //to discover it was performing the sum of divisors
 
-        registers = prog[pc].opcode(registers, prog[pc])
+            registers[0] = sumOfDivisors(registers[1])
 
-        registers[pcreg]++
-        fmt.Println(registers)
-        time.Sleep(time.Second/4)
+            registers[pcreg] = 100
+        } else {
+
+            registers = prog[pc].opcode(registers, prog[pc])
+
+            registers[pcreg]++
+            //fmt.Println(registers)
+            //time.Sleep(time.Second/4)
+        }
     }
 
     return registers[0]
 
+}
+
+func sumOfDivisors(seed int) int {
+    divSum := 0
+
+
+    root := int(math.Sqrt(float64(seed)))
+
+    for i := 1; i <= root; i++ {
+        if seed % i == 0 {
+            divSum = divSum + i + seed/i
+        }
+    }
+
+    return divSum
 }
 
 func test() bool {
