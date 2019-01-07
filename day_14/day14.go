@@ -23,7 +23,7 @@ func newPos(elfPos int, recipes []int) int {
 }
 
 func recipesA(lastNum int) []int {
-  //part A, what are the next 10 recipes after lastNum ?
+	//part A, what are the next 10 recipes after lastNum ?
 
 	//start data
 	elf1 := 0
